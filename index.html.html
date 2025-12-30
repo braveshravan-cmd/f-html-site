@@ -1,0 +1,1067 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Stranger New Year Signal</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- Retro serif similar to Stranger Things UI -->
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-main: #020308;
+      --bg-panel: #07030f;
+      --accent-red: #ff1439;
+      --accent-red-soft: #ff4b7a;
+      --accent-blue: #3b4bff;
+      --text-main: #f5e9ff;
+      --muted: #a591b8;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      background: radial-gradient(circle at top left, #1b0c28 0%, #020308 45%, #000000 100%);
+      color: var(--text-main);
+      font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      display: flex;
+      align-items: stretch;
+      justify-content: center;
+      padding: 16px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* Upside Down background panel (right side) */
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background:
+        linear-gradient(to left, rgba(0,0,0,0.75), transparent 45%),
+        radial-gradient(circle at right center, rgba(255, 0, 40, 0.4), transparent 60%),
+        url("https://i.pinimg.com/originals/3d/ab/9d/3dab9d73dfd5ad0ff4b1c6f826a08c31.jpg")
+          center right / cover no-repeat fixed;
+      opacity: 0.6;
+      z-index: -3;
+    }
+
+    /* CRT scanlines */
+    .scanlines {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background: repeating-linear-gradient(
+        to bottom,
+        rgba(255,255,255,0.025),
+        rgba(255,255,255,0.025) 1px,
+        transparent 1px,
+        transparent 3px
+      );
+      mix-blend-mode: screen;
+      opacity: 0.3;
+      animation: flicker 5s infinite alternate;
+      z-index: -1;
+    }
+
+    @keyframes flicker {
+      0% { opacity: 0.06; }
+      20% { opacity: 0.12; }
+      40% { opacity: 0.04; }
+      60% { opacity: 0.1; }
+      80% { opacity: 0.07; }
+      100% { opacity: 0.13; }
+    }
+
+    /* Floating spores */
+    .spore {
+      position: fixed;
+      width: 5px;
+      height: 16px;
+      background: rgba(255, 255, 255, 0.6);
+      border-radius: 999px;
+      filter: blur(1px);
+      mix-blend-mode: screen;
+      pointer-events: none;
+      opacity: 0.0;
+      animation-name: sporeFloat;
+      animation-timing-function: linear;
+      animation-iteration-count: infinite;
+      z-index: -2;
+    }
+
+    @keyframes sporeFloat {
+      0% {
+        transform: translate3d(var(--sx), 110vh, 0) translateX(0);
+        opacity: 0;
+      }
+      10% { opacity: 0.45; }
+      40% {
+        transform: translate3d(calc(var(--sx) + 10px), 60vh, 0) translateX(-6px);
+        opacity: 0.6;
+      }
+      70% {
+        transform: translate3d(calc(var(--sx) - 6px), 20vh, 0) translateX(8px);
+        opacity: 0.5;
+      }
+      100% {
+        transform: translate3d(calc(var(--sx) + 4px), -20vh, 0) translateX(-4px);
+        opacity: 0;
+      }
+    }
+
+    /* FIREFLIES */
+    .firefly {
+      position: fixed;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: radial-gradient(circle, #fff9c4 0%, #ffeb3b 40%, transparent 70%);
+      box-shadow:
+        0 0 8px rgba(255, 241, 118, 0.9),
+        0 0 18px rgba(255, 214, 0, 0.9);
+      pointer-events: none;
+      opacity: 0;
+      mix-blend-mode: screen;
+      z-index: -1;
+      animation-name: fireflyDrift;
+      animation-timing-function: linear;
+      animation-iteration-count: infinite;
+    }
+
+    @keyframes fireflyDrift {
+      0% {
+        transform: translate3d(var(--fx), var(--fy-start), 0);
+        opacity: 0;
+      }
+      10% {
+        opacity: 0.9;
+      }
+      40% {
+        transform: translate3d(calc(var(--fx) + 20px), calc(var(--fy-start) - 20vh), 0);
+        opacity: 1;
+      }
+      70% {
+        transform: translate3d(calc(var(--fx) - 10px), calc(var(--fy-start) - 35vh), 0);
+        opacity: 0.8;
+      }
+      100% {
+        transform: translate3d(calc(var(--fx) + 10px), calc(var(--fy-start) - 55vh), 0);
+        opacity: 0;
+      }
+    }
+
+    .page-wrap {
+      max-width: 1120px;
+      width: 100%;
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(0, 1.1fr);
+      gap: 18px;
+      backdrop-filter: blur(10px);
+    }
+
+    @media (max-width: 800px) {
+      body {
+        overflow-y: auto;
+      }
+      .page-wrap {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 14px;
+      }
+    }
+
+    .panel {
+      background: radial-gradient(circle at top left, #13061f 0%, #05010c 55%, #020008 100%);
+      border-radius: 18px;
+      border: 1px solid rgba(255, 150, 210, 0.25);
+      box-shadow:
+        0 0 28px rgba(0, 0, 0, 0.95),
+        0 0 40px rgba(255, 0, 40, 0.25);
+      padding: 18px 18px 16px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .panel::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at top left, rgba(255, 0, 60, 0.12), transparent 60%);
+      opacity: 0.9;
+      pointer-events: none;
+    }
+
+    .panel-inner {
+      position: relative;
+      z-index: 1;
+      height: 100%;
+    }
+
+    /* LEFT PANEL: heading + meta + CTA */
+    .logo-tag {
+      font-family: "Cormorant Garamond", serif;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      font-size: 0.7rem;
+      color: rgba(255, 200, 220, 0.9);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .logo-tag::before,
+    .logo-tag::after {
+      content: "";
+      height: 1px;
+      width: 28px;
+      background: linear-gradient(to right, transparent, rgba(255, 80, 120, 0.9));
+    }
+
+    .logo-tag::after {
+      background: linear-gradient(to right, rgba(255, 80, 120, 0.9), transparent);
+    }
+
+    .title-main {
+      margin-top: 16px;
+      font-family: "Cormorant Garamond", serif;
+      font-size: clamp(1.8rem, 4vw, 2.4rem);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #ff2c40;
+      text-shadow:
+        0 0 6px rgba(0,0,0,1),
+        0 0 18px rgba(255, 0, 20, 0.9),
+        0 0 32px rgba(255, 40, 80, 0.9);
+    }
+
+    .title-sub {
+      margin-top: 4px;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: rgba(255, 220, 235, 0.9);
+    }
+
+    .description {
+      margin-top: 16px;
+      font-size: 0.9rem;
+      color: var(--muted);
+      line-height: 1.6;
+      max-width: 440px;
+    }
+
+    .meta-row {
+      margin-top: 18px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      font-size: 0.8rem;
+      color: rgba(210, 185, 225, 0.9);
+    }
+
+    .meta-pill {
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 120, 180, 0.5);
+      background: radial-gradient(circle at top, rgba(255, 80, 140, 0.18), rgba(5,0,12,0.9));
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+    }
+
+    .cta-block {
+      margin-top: 26px;
+      padding-top: 12px;
+      border-top: 1px solid rgba(255, 120, 190, 0.25);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .cta-heading {
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: rgba(255, 220, 240, 0.96);
+    }
+
+    .cta-text {
+      font-size: 0.9rem;
+      color: rgba(235, 215, 245, 0.92);
+      max-width: 440px;
+    }
+
+    .cta-row {
+      margin-top: 4px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .cta-button {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 18px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 150, 210, 0.95);
+      background: radial-gradient(circle at top, #ff4b7a, #520018);
+      color: #fff7ff;
+      font-size: 0.78rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      cursor: pointer;
+      text-shadow: 0 0 6px rgba(0,0,0,0.9);
+      box-shadow:
+        0 0 12px rgba(255, 0, 60, 0.9),
+        0 0 26px rgba(255, 0, 40, 0.8);
+      transition:
+        transform 0.18s ease,
+        box-shadow 0.18s ease,
+        filter 0.18s ease;
+    }
+
+    .cta-button:hover {
+      transform: translateY(-1px) scale(1.03);
+      filter: brightness(1.08);
+      box-shadow:
+        0 0 18px rgba(255, 0, 80, 1),
+        0 0 40px rgba(255, 0, 40, 0.98);
+    }
+
+    .cta-button:active {
+      transform: translateY(0) scale(0.97);
+      box-shadow:
+        0 0 10px rgba(255, 0, 50, 0.75),
+        0 0 22px rgba(255, 0, 40, 0.75);
+    }
+
+    .cta-button.disabled {
+      opacity: 0.45;
+      cursor: default;
+      box-shadow: none;
+    }
+
+    .cta-note {
+      font-size: 0.78rem;
+      color: rgba(210, 190, 225, 0.85);
+    }
+
+    /* RIGHT PANEL: message viewer + mini radar */
+    .right-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.78rem;
+      color: rgba(215, 190, 230, 0.9);
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      margin-bottom: 10px;
+    }
+
+    .pill-soft {
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(140, 120, 230, 0.7);
+      background: radial-gradient(circle at top, rgba(90, 70, 230, 0.25), rgba(6, 4, 26, 0.9));
+    }
+
+    .message-counter {
+      font-size: 0.8rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: rgba(255, 200, 230, 0.9);
+      margin-bottom: 4px;
+    }
+
+    .message-box {
+      margin-top: 4px;
+      padding: 14px 16px 12px;
+      border-radius: 14px;
+      background: radial-gradient(circle at top, rgba(255, 0, 60, 0.18), rgba(6, 1, 12, 0.96));
+      border: 1px solid rgba(255, 120, 180, 0.5);
+      box-shadow:
+        0 0 18px rgba(0, 0, 0, 0.9),
+        0 0 24px rgba(255, 0, 80, 0.4);
+      min-height: 120px;
+    }
+
+    .message-text {
+      font-size: 0.95rem;
+      line-height: 1.6;
+      color: rgba(249, 239, 255, 0.98);
+      white-space: pre-line;
+      text-shadow: 0 0 8px rgba(0,0,0,0.85);
+    }
+
+    .message-text span.caret {
+      display: inline-block;
+      width: 8px;
+      background: rgba(255, 220, 240, 0.95);
+      margin-left: 1px;
+      animation: blink 0.9s steps(1) infinite;
+    }
+
+    @keyframes blink {
+      0%, 50% { opacity: 1; }
+      50.01%, 100% { opacity: 0; }
+    }
+
+    .timeline-row {
+      margin-top: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.8rem;
+      color: rgba(210, 190, 225, 0.9);
+    }
+
+    .tiny-dots {
+      display: flex;
+      gap: 4px;
+    }
+
+    .tiny-dot {
+      width: 4px;
+      height: 4px;
+      border-radius: 999px;
+      background: rgba(255, 180, 220, 0.7);
+      box-shadow: 0 0 6px rgba(255, 0, 80, 0.7);
+    }
+
+    .radar-card {
+      margin-top: 16px;
+      padding: 12px;
+      border-radius: 14px;
+      background: radial-gradient(circle at top, rgba(30, 20, 80, 0.5), rgba(3, 0, 8, 0.95));
+      border: 1px solid rgba(140, 120, 230, 0.7);
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+      gap: 10px;
+      align-items: center;
+    }
+
+    @media (max-width: 800px) {
+      .radar-card {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    .radar-title {
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: rgba(210, 200, 250, 0.95);
+      margin-bottom: 4px;
+    }
+
+    .radar-text {
+      font-size: 0.82rem;
+      color: rgba(210, 195, 240, 0.9);
+      line-height: 1.5;
+    }
+
+    .radar-graph {
+      position: relative;
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      border: 1px solid rgba(140, 120, 230, 0.8);
+      margin-left: auto;
+      margin-right: auto;
+      background:
+        radial-gradient(circle, rgba(90, 70, 230, 0.3), transparent 60%);
+      box-shadow:
+        0 0 16px rgba(140, 120, 230, 0.8),
+        0 0 30px rgba(90, 70, 230, 0.6);
+      overflow: hidden;
+    }
+
+    .radar-line {
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      border: 1px solid rgba(200, 190, 255, 0.2);
+    }
+
+    .radar-sweep {
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      background: conic-gradient(
+        from 0deg,
+        rgba(255, 255, 255, 0.75),
+        transparent 40%
+      );
+      mix-blend-mode: screen;
+      animation: sweep 4.5s linear infinite;
+    }
+
+    @keyframes sweep {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .radar-dot {
+      position: absolute;
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: #ff4b7a;
+      box-shadow:
+        0 0 10px rgba(255, 0, 80, 1),
+        0 0 22px rgba(255, 0, 100, 0.9);
+    }
+
+    .radar-dot:nth-child(4) { top: 20%; left: 65%; }
+    .radar-dot:nth-child(5) { top: 56%; left: 30%; }
+    .radar-dot:nth-child(6) { top: 70%; left: 72%; }
+
+    /* Final overlay */
+    .final-overlay {
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(circle at center, rgba(255, 240, 255, 0.1), rgba(0, 0, 0, 0.97));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 1.6s ease;
+      z-index: 5;
+    }
+
+    .final-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .final-burst {
+      position: absolute;
+      width: 40vmax;
+      height: 40vmax;
+      border-radius: 50%;
+      background:
+        radial-gradient(circle, rgba(255, 255, 255, 0.9) 0%, rgba(255, 200, 240, 0.4) 30%, transparent 70%);
+      box-shadow:
+        0 0 80px rgba(255, 255, 255, 0.96),
+        0 0 160px rgba(255, 160, 220, 0.9),
+        0 0 220px rgba(255, 80, 120, 0.8);
+      opacity: 0;
+      transform: scale(0.3);
+      animation: burstIn 2.5s ease forwards;
+    }
+
+    @keyframes burstIn {
+      0% { opacity: 0; transform: scale(0.3); }
+      55% { opacity: 1; transform: scale(1.05); }
+      100% { opacity: 0.92; transform: scale(1); }
+    }
+
+    .final-message-box {
+      position: relative;
+      max-width: 720px;
+      padding: 26px 20px 20px;
+      border-radius: 18px;
+      background: rgba(4, 0, 10, 0.96);
+      border: 1px solid rgba(255, 200, 245, 0.7);
+      box-shadow:
+        0 0 26px rgba(0, 0, 0, 0.96),
+        0 0 40px rgba(255, 160, 230, 0.9);
+      color: #fff6ff;
+      text-align: center;
+      overflow: hidden;
+      text-shadow: 0 0 8px rgba(0,0,0,0.9);
+      z-index: 1;
+    }
+
+    .final-heading {
+      font-family: "Cormorant Garamond", serif;
+      font-size: clamp(1.4rem, 4vw, 1.8rem);
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: #ffe9ff;
+      text-shadow:
+        0 0 6px rgba(255, 80, 160, 0.95),
+        0 0 18px rgba(255, 0, 80, 0.9);
+      margin-bottom: 10px;
+    }
+
+    .final-body {
+      font-size: 0.98rem;
+      line-height: 1.7;
+      color: rgba(255, 244, 255, 0.99);
+      white-space: pre-line;
+      text-align: left;
+      max-height: 50vh;
+      overflow: auto;
+    }
+
+    .final-footer {
+      margin-top: 12px;
+      font-size: 0.85rem;
+      text-align: right;
+      color: rgba(255, 230, 250, 0.95);
+    }
+
+    .confetti {
+      position: fixed;
+      top: -10px;
+      width: 8px;
+      height: 16px;
+      border-radius: 4px;
+      background: linear-gradient(
+        to bottom,
+        #ffb3ff,
+        #ff4b7a,
+        #ffda7a
+      );
+      opacity: 0.9;
+      animation: fall linear forwards;
+      mix-blend-mode: screen;
+      z-index: 6;
+    }
+
+    @keyframes fall {
+      0% {
+        transform: translate3d(var(--cx), -10vh, 0) rotate(0deg);
+      }
+      100% {
+        transform: translate3d(calc(var(--cx) + 20px), 110vh, 0) rotate(360deg);
+      }
+    }
+
+    /* Tap overlay */
+    .tap-overlay {
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(circle at center, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.96));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      z-index: 7;
+      color: #ffe5f5;
+      text-align: center;
+      padding: 24px;
+    }
+
+    .tap-title {
+      font-family: "Cormorant Garamond", serif;
+      font-size: 1.4rem;
+      text-transform: uppercase;
+      letter-spacing: 0.22em;
+      margin-bottom: 8px;
+      text-shadow:
+        0 0 6px rgba(255, 0, 80, 0.9),
+        0 0 22px rgba(255, 0, 40, 0.95);
+    }
+
+    .tap-text {
+      font-size: 0.95rem;
+      max-width: 420px;
+      color: rgba(255, 220, 240, 0.95);
+      text-shadow: 0 0 6px rgba(0,0,0,0.9);
+    }
+
+    .tap-button {
+      margin-top: 16px;
+      padding: 10px 24px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 150, 210, 0.95);
+      background: radial-gradient(circle at top, #ff4b7a, #520018);
+      color: #fff7ff;
+      font-size: 0.85rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      cursor: pointer;
+      text-shadow: 0 0 6px rgba(0, 0, 0, 0.9);
+      box-shadow:
+        0 0 12px rgba(255, 0, 60, 0.9),
+        0 0 32px rgba(255, 0, 40, 0.85);
+      transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease,
+        filter 0.2s ease;
+    }
+
+    .tap-button:hover {
+      transform: translateY(-2px) scale(1.03);
+      filter: brightness(1.08);
+      box-shadow:
+        0 0 18px rgba(255, 0, 80, 1),
+        0 0 40px rgba(255, 0, 40, 0.98);
+    }
+
+    .tap-button:active {
+      transform: translateY(0) scale(0.98);
+      box-shadow:
+        0 0 10px rgba(255, 0, 50, 0.75),
+        0 0 22px rgba(255, 0, 40, 0.75);
+    }
+
+    .final-body::-webkit-scrollbar {
+      width: 4px;
+    }
+    .final-body::-webkit-scrollbar-track {
+      background: rgba(0, 0, 0, 0.3);
+    }
+    .final-body::-webkit-scrollbar-thumb {
+      background: rgba(255, 180, 230, 0.9);
+      border-radius: 999px;
+    }
+  </style>
+</head>
+<body>
+  <div class="scanlines"></div>
+
+  <div class="page-wrap">
+    <!-- LEFT PANEL -->
+    <section class="panel">
+      <div class="panel-inner">
+        <div class="logo-tag">UPSIDE DOWN TRANSMISSION</div>
+        <h1 class="title-main">New Year Signal</h1>
+        <div class="title-sub"> • FOR YOU</div>
+
+        <p class="description">
+          Somewhere between Hawkins and the Upside Down, a quiet transmission has been trying to reach you all year.
+          Tonight, it finally gets through — one message at a time.
+        </p>
+
+        <div class="meta-row">
+          <span class="meta-pill">MOOD · SOFT + BRAVE</span>
+          <span class="meta-pill">GENRE · STRANGE, BUT SAFE</span>
+        </div>
+
+        <div class="cta-block">
+          <div class="cta-heading">HOW IT WORKS</div>
+          <p class="cta-text">
+            Tap the button to let the signal lock onto you. Each press reveals another piece of what this year proved about you —
+            your strength, your heart, your magic. When the last message is decoded, your New Year unlocks.
+          </p>
+          <div class="cta-row">
+            <button class="cta-button" id="nextMessageButton">
+              <span>NEXT MESSAGE</span>
+            </button>
+            <span class="cta-note">
+              Audio starts after your first tap. Use headphones if you can.
+            </span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- RIGHT PANEL -->
+    <section class="panel">
+      <div class="panel-inner">
+        <div class="right-header">
+          <span class="pill-soft">MESSAGE FEED · LIVE FROM THE UPSIDE DOWN</span>
+          <span>CHANNEL · FRIENDSHIP / HOPE</span>
+        </div>
+
+        <div class="message-counter" id="messageCounter">
+          MESSAGE 0 / 9
+        </div>
+
+        <div class="message-box">
+          <div class="message-text" id="messageText">
+            Tap "Next Message" to let the static clear and pull the first signal through.<span class="caret"></span>
+          </div>
+        </div>
+
+        <div class="timeline-row">
+          <span>STATUS · CALIBRATING LIGHTS</span>
+          <div class="tiny-dots">
+            <div class="tiny-dot"></div>
+            <div class="tiny-dot"></div>
+            <div class="tiny-dot"></div>
+          </div>
+        </div>
+
+        <div class="radar-card">
+          <div>
+            <div class="radar-title">EMOTIONAL RADAR · BEST FRIEND</div>
+            <p class="radar-text">
+              Signal locked on your heart. Strength, softness, and stubborn hope are reading off the charts.
+              No Vecna, no Mind Flayer, no bad day stands a chance against that.
+            </p>
+          </div>
+          <div class="radar-graph">
+            <div class="radar-line"></div>
+            <div class="radar-sweep"></div>
+            <div class="radar-dot"></div>
+            <div class="radar-dot"></div>
+            <div class="radar-dot"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- Final scene -->
+  <div class="final-overlay" id="finalOverlay">
+    <div class="final-burst"></div>
+    <div class="final-message-box">
+      <div class="final-heading">Happy New Year, My Favorite Human</div>
+      <div class="final-body" id="finalBody"></div>
+      <div class="final-footer">
+        always in your corner — even in the Upside Down.
+      </div>
+    </div>
+  </div>
+
+  <!-- Tap to start -->
+  <div class="tap-overlay" id="tapOverlay">
+    <div class="tap-title">Tune The Signal</div>
+    <p class="tap-text">
+      The Upside Down does not like to be disturbed, but tonight it is on our side.
+      Tap below to tune in, start the music, and let your New Year messages find you.
+    </p>
+    <button class="tap-button" id="tapButton">Tap To Enter</button>
+  </div>
+
+  <!-- Audio: replace with your local/hosted MP3s (personal use only) -->
+  <audio id="trackIntro" preload="auto">
+    <source src="https://github.com/braveshravan-cmd/f-html-site/blob/master/kate%20bush.mp3" type="audio/mpeg">
+  </audio>
+
+  <audio id="trackFinal" preload="auto">
+    <source src="https://github.com/braveshravan-cmd/f-html-site/blob/master/whosays.mp3" type="audio/mpeg">
+  </audio>
+
+  <script>
+    // ------- CONFIG -------
+    const friendName = "Appu"; // change to her name / nickname
+
+    const messages = [
+      `2025 ended up already hehe, before jumping into 2026, I wanted to tell you that the manaswini i knew has come a lot way ahead and im happy😁 for that and wanted to send you a little message from the Upside Down — a reminder of just how much light you bring into the world, even on the days you feel lost in the dark.`,
+      `You have walked through seasons that felt heavier than they looked from the outside, and still you somehow made room to hold everyone else together🩵.`,
+      `You never give yourself enough credit for the way you keep going — even when you are tired, even when no one is watching, even when you secretly doubt yourself.`,
+      `The world does not clap loudly enough for soft hearts, but your gentleness is not a weakness — it is the reason people feel safe coming home to you.`,
+      `You have grown so much this year: in the way you set boundaries, in the way you stand up for yourself, and in the way you choose yourself without losing your warmth.`,
+      `Even on the days you say you are a mess,I like you being a mess not only mess i like every version of you whether it is speaking nonsense or spaming reels🤭.you are perfect and special to me in every way.`,
+      `If you could see yourself the way the people who love you see you, you would never again doubt how strong, rare, and irreplaceable you really are💎.`,
+      `No monster from the Upside Down, no bad day, and no old version of you is strong enough to cancel out the person you are becoming.`,
+      `So as this year closes, here is your truth: you are enough exactly as you are, you are allowed to dream bigger, and you are never going to face any of this alone👩‍🍼.`
+    ];
+
+    const finalMessage =
+`Dear ${friendName},
+
+In some parallel universe, there is a version of you standing in the middle of the Upside Down, thinking she is small and lost and alone.
+
+In this universe, she has a person would cross whole dimensions just to make sure she is okay.
+
+This year, you were braver than you remember, kinder than you realize, and stronger than you will ever admit. You showed up for people on days you could barely show up for yourself. You carried so much, and still somehow made space for laughter, chaos, and the tiny moments that kept everyone else going.
+
+You have earned soft days. You have earned gentle love. You have earned the right to walk into this New Year without apologizing for who you are or shrinking to keep anyone comfortable.
+
+In the seasons ahead, may you:
+• Trust your own voice a little more.
+• Choose what your heart says without feeling guilty.
+• Say no to shedding even a tear for a third person.
+• Remember that even when the lights flicker, you are never truly in the dark.
+
+Thank you for being the kind of person who makes the world feel less terrifying and a lot more like home.
+Thank you for existing in my timeline.
+
+Happy New Year, you magical, stubborn, beautiful soul.
+No matter how strange things get, you will always have me — on your side, in your corner, in every world.If you run out of anything im always here to hotspot you hehe.
+
+With every bit of love,
+an idiot on this side of the portal.❤️`;
+
+    // ------- SPORES -------
+    function createSpores() {
+      const count = 60;
+      for (let i = 0; i < count; i++) {
+        const s = document.createElement("div");
+        s.className = "spore";
+        const x = Math.random() * 100;
+        const duration = 18 + Math.random() * 18;
+        const delay = -Math.random() * duration;
+        s.style.setProperty("--sx", x + "vw");
+        s.style.animationDuration = duration + "s";
+        s.style.animationDelay = delay + "s";
+        document.body.appendChild(s);
+      }
+    }
+
+    // ------- FIREFLIES -------
+    function createFireflies() {
+      const count = 28; // adjust density
+      for (let i = 0; i < count; i++) {
+        const f = document.createElement("div");
+        f.className = "firefly";
+
+        const x = Math.random() * 100;          // vw
+        const yStart = 20 + Math.random() * 60; // vh
+        const duration = 14 + Math.random() * 14;
+        const delay = -Math.random() * duration;
+
+        f.style.setProperty("--fx", x + "vw");
+        f.style.setProperty("--fy-start", yStart + "vh");
+        f.style.animationDuration = duration + "s";
+        f.style.animationDelay = delay + "s";
+
+        document.body.appendChild(f);
+      }
+    }
+
+    // ------- CONFETTI -------
+    function launchConfetti() {
+      for (let i = 0; i < 70; i++) {
+        const c = document.createElement("div");
+        c.className = "confetti";
+        const cx = Math.random() * 100;
+        const duration = 5 + Math.random() * 4;
+        c.style.setProperty("--cx", cx + "vw");
+        c.style.animationDuration = duration + "s";
+        c.style.opacity = 0.7 + Math.random() * 0.3;
+        document.body.appendChild(c);
+        setTimeout(() => c.remove(), duration * 1000 + 1000);
+      }
+    }
+
+    // ------- TYPEWRITER -------
+    function typeText(element, text, speed = 24, callback) {
+      element.innerHTML = "";
+      let i = 0;
+      const caret = document.createElement("span");
+      caret.className = "caret";
+      const interval = setInterval(() => {
+        element.textContent = text.slice(0, i);
+        element.appendChild(caret);
+        i++;
+        if (i > text.length) {
+          clearInterval(interval);
+          if (callback) callback();
+        }
+      }, speed);
+    }
+
+    function typeTextFinal(element, text, speed = 22, callback) {
+      element.innerHTML = "";
+      let i = 0;
+      const interval = setInterval(() => {
+        element.textContent = text.slice(0, i);
+        i++;
+        if (i > text.length) {
+          clearInterval(interval);
+          if (callback) callback();
+        }
+      }, speed);
+    }
+
+    // ------- MAIN INTERACTION -------
+    let currentIndex = 0;
+    let musicStarted = false;
+    let finalShown = false;
+
+    const messageCounter = document.getElementById("messageCounter");
+    const messageText = document.getElementById("messageText");
+    const nextButton = document.getElementById("nextMessageButton");
+    const finalOverlay = document.getElementById("finalOverlay");
+    const finalBody = document.getElementById("finalBody");
+    const tapOverlay = document.getElementById("tapOverlay");
+    const tapButton = document.getElementById("tapButton");
+
+    const trackIntro = document.getElementById("trackIntro");
+    const trackFinal = document.getElementById("trackFinal");
+
+    trackIntro.volume = 0.95;
+    trackFinal.volume = 0.0;
+
+    function fadeAudio(outTrack, inTrack, duration = 2500) {
+      const steps = 25;
+      const stepTime = duration / steps;
+      const outStep = outTrack ? outTrack.volume / steps : 0;
+      const inStep = (1.0 - inTrack.volume) / steps;
+
+      let count = 0;
+      const timer = setInterval(() => {
+        count++;
+        if (outTrack) {
+          outTrack.volume = Math.max(0, outTrack.volume - outStep);
+          if (count === steps) outTrack.pause();
+        }
+        inTrack.volume = Math.min(1.0, inTrack.volume + inStep);
+        if (count >= steps) clearInterval(timer);
+      }, stepTime);
+    }
+
+    tapButton.addEventListener("click", async () => {
+      tapOverlay.style.display = "none";
+      if (!musicStarted) {
+        try {
+          await trackIntro.play();
+          musicStarted = true;
+        } catch (e) {
+          console.log("Audio play blocked:", e);
+        }
+      }
+    });
+
+    function showNextMessage() {
+      if (finalShown) return;
+
+      if (currentIndex >= messages.length) {
+        showFinalScene();
+        return;
+      }
+
+      const total = messages.length;
+      const text = messages[currentIndex];
+      messageCounter.textContent = `MESSAGE ${currentIndex + 1} / ${total}`;
+      typeText(messageText, text);
+      currentIndex++;
+
+      if (currentIndex === total) {
+        nextButton.textContent = "UNLOCK FINAL MESSAGE";
+      }
+      if (currentIndex > total) {
+        nextButton.classList.add("disabled");
+      }
+    }
+
+    function showFinalScene() {
+      if (finalShown) return;
+      finalShown = true;
+
+      finalOverlay.classList.add("active");
+      launchConfetti();
+
+      try {
+        trackFinal.currentTime = 0;
+        trackFinal.play().then(() => {
+          fadeAudio(trackIntro, trackFinal, 3200);
+        }).catch((e) => console.log("Final track blocked:", e));
+      } catch (e) {
+        console.log("Audio error:", e);
+      }
+
+      typeTextFinal(finalBody, finalMessage, 22);
+    }
+
+    nextButton.addEventListener("click", () => {
+      if (nextButton.classList.contains("disabled")) return;
+      if (currentIndex <= messages.length) {
+        showNextMessage();
+      } else {
+        showFinalScene();
+      }
+    });
+
+    // init spores + fireflies
+    createSpores();
+    createFireflies();
+  </script>
+</body>
+</html>
